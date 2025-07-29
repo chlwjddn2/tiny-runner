@@ -11,7 +11,7 @@ export default class StartScene extends Phaser.Scene {
   create = () => {
     this.startButton = this.add.image(this.scale.width / 2, this.scale.height / 2, 'startButton').setOrigin(0.5).setInteractive({ useHandCursor: true });
     this.startButton.on('pointerdown', () => {
-      this.scene.switch('MainScene');
+      this.scene.start('MainScene');
       this.sound.play('click');
     });
     this.startButton.on('pointerover', () => this.startButton.setScale(1.1));

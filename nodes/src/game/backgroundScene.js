@@ -1,6 +1,6 @@
-export default class backgroundScene extends Phaser.Scene {
+export default class BackgroundScene extends Phaser.Scene {
   constructor() {
-    super({ key: 'backgroundScene' });
+    super({ key: 'BackgroundScene' });
   }
 
   preload = () => {

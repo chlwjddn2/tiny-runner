@@ -8,6 +8,7 @@ module.exports = {
     clean: true,
   },
   mode: 'development',
+  // mode: 'production', 
   module: {
     rules: [
       {

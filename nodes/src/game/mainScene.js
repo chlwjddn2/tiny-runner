@@ -1,13 +1,13 @@
 export default class MainScene extends Phaser.Scene {
-  #jumpVelocity = -700;
-  #isJumping = false;
-  #jumpCount = 0;
-  #maxJump = 2; 
-  #gameSpeed = 5;
-  #isGameOver = false;
-  #score = 0;
-  #lastScoreTime = 0;
-  #obstacleKeys = ['obstacle1', 'obstacle2'];
+  #jumpVelocity;
+  #isJumping;
+  #jumpCount;
+  #maxJump; 
+  #gameSpeed;
+  #isGameOver;
+  #score;
+  #lastScoreTime;
+  #obstacleKeys;
 
   constructor() {
     super({ key: 'MainScene' });
@@ -28,6 +28,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create = () => {
+    this.#initStatus();
     this.#initFlatForms();
     this.#initPlayer();
     this.#initObstacles();
@@ -68,6 +69,10 @@ export default class MainScene extends Phaser.Scene {
       this.player.play('player-run', true);
       this.player.setSize(82, 128, true);
     }
+    
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.down) && !onGround) {
+      this.player.setVelocityY(1000); // 강제로 아래로 떨어지게 함
+    }
 
     this.wasOnFloor = onGround;
     
@@ -80,6 +85,18 @@ export default class MainScene extends Phaser.Scene {
     }
     
   };
+
+  #initStatus = () =>{
+    this.#jumpVelocity = -700;
+    this.#isJumping = false;
+    this.#jumpCount = 0;
+    this.#maxJump = 2; 
+    this.#gameSpeed = 5;
+    this.#isGameOver = false;
+    this.#score = 0;
+    this.#lastScoreTime = 0;
+    this.#obstacleKeys = ['obstacle1', 'obstacle2'];
+  }
 
   #initFlatForms = () => {
     this.platforms = this.physics.add.group({allowGravity: false, immovable: true});
@@ -110,7 +127,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   #initPlayer = () => {
-    this.anims.create({
+    !this.anims.exists('player-run') && this.anims.create({
       key: 'player-run',
       frames: this.anims.generateFrameNumbers('playerRun', {
         start: 0,
@@ -119,7 +136,7 @@ export default class MainScene extends Phaser.Scene {
       frameRate: 30,
       repeat: -1,
     });
-    this.anims.create({
+    !this.anims.exists('player-jump') && this.anims.create({
       key: 'player-jump',
       frames: this.anims.generateFrameNumbers('playerJump', {
         start: 0,
@@ -127,7 +144,7 @@ export default class MainScene extends Phaser.Scene {
       }),
       frameRate: 20,
     });
-    this.anims.create({
+    !this.anims.exists('player-die') && this.anims.create({
       key: 'player-die',
       frames: this.anims.generateFrameNumbers('playerDie', {
         start: 0,
@@ -135,7 +152,7 @@ export default class MainScene extends Phaser.Scene {
       }),
       frameRate: 10,
     });
-    this.anims.create({
+    !this.anims.exists('player-die') && this.anims.create({
       key: 'player-sliding',
       frames: this.anims.generateFrameNumbers('playerSliding', {
         start: 0,
@@ -203,6 +220,9 @@ export default class MainScene extends Phaser.Scene {
     this.player.setSize(587, 707, true);
     this.player.setOffset(0, 0);
     this.physics.pause();
+    this.player.once('animationcomplete-player-die', () => {
+      this.scene.start('GameoverScene');
+    });
   }
 
   #setScore = () => {
