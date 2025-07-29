@@ -7,7 +7,7 @@ class Game {
   #config = {
     type: Phaser.CANVAS,
     width: 1280,
-    height: 720,
+    height: 420,
     // 게임에 사용되는 하위 씬 등록
     scene: [
       backgroundScene,
